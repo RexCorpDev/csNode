@@ -1,17 +1,18 @@
 'use strict';
 
-let http = require('http');
+var express = require('express');
+var app = express();
+var http = require('http').createServer(app);
 
-let myRequest = message => {
-  let request = http.request('http://codeschool.com', res => {
-    response.pipe(process.stdout, {end : false});
-  });
-  request.write(message);
-  request.end();
-};
 
-myRequest('this is Dog\n');
 
+
+
+
+module.exports = app;
+
+
+// NODE read & write practice
 // 'use strict';
 //
 // let http = require('http');
@@ -40,18 +41,6 @@ myRequest('this is Dog\n');
 // }).listen(PORT, err => {
 //   console.log(err || `Server listening on ${PORT}`);
 // });
-
-
-
-
-
-
-
-
-
-
-
-
 
 // server.on('request', (req, res) => {
 //   res.writeHead(200);
