@@ -15,6 +15,13 @@ const PORT = process.env.PORT || 8080;
 //   console.log(err || `Server listening on ${PORT}`);
 // });
 
+// req.on('readable', ()=>{
+//   let chunk = null;
+//   while(null !== (chunk = req.read())){
+//     res.write(chunk);
+//   };
+
+
 server.on('request', (req, res) => {
   res.writeHead(200);
   req.pipe(res);
