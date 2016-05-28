@@ -7,6 +7,30 @@ let server = http.createServer();;
 
 const PORT = process.env.PORT || 8080;
 
+server.on('request', (req, res) => {
+  res.writeHead(200);
+  let newFile = fs.createWriteStream('readme_copy.md');
+  req.pipe(newFile);
+  console.log('newFile\n', newFile);
+  req.on('end', () =>{
+    res.end('uploaded!');
+  });
+}).listen(PORT, err => {
+  console.log(err || `Server listening on ${PORT}`);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
 // server.on('request', (req, res) => {
 //   res.writeHead(200);
 //   res.write('GTG\n');
@@ -20,14 +44,3 @@ const PORT = process.env.PORT || 8080;
 //   while(null !== (chunk = req.read())){
 //     res.write(chunk);
 //   };
-
-
-server.on('request', (req, res) => {
-  res.writeHead(200);
-  req.pipe(res);
-});
-req.on('end', ()=>{
-  res.end();
-}).listen(PORT, err => {
-  console.log(err || `Server listening on ${PORT}`);
-});
