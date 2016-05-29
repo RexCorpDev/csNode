@@ -1,16 +1,24 @@
 'use strict';
 
+const PORT = process.env.PORT || 8080;
 var express = require('express');
 var app = express();
-var http = require('http').createServer(app);
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
 
+io.on('connection', client => {
+  console.log('Client connected...');
 
+  client.on('question', question => {
+    client.broadcast.emit('question', question);
 
+  });
 
+});
 
-
-module.exports = app;
-
+server.listen(PORT, err => {
+  console.log(err || `Server @ ${PORT}`);
+});
 
 // NODE read & write practice
 // 'use strict';
