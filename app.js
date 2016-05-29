@@ -1,19 +1,39 @@
 'use strict';
 
 const PORT = process.env.PORT || 8080;
-var express = require('express');
-var app = express();
-var server = require('http').createServer(app);
-var io = require('socket.io')(server);
+let express = require('express');
+let app = express();
+let server = require('http').createServer(app);
+let io = require('socket.io')(server);
+let messages = [];
+
+let storeMessage = (name, message) => {
+  messages.push({name, data});
+  if(messages.length < 10) return messages.shift();
+};
 
 io.on('connection', client => {
-  console.log('Client connected...');
-
-  client.on('question', question => {
-    client.broadcast.emit('question', question);
-
+  client.on('join', name => {
+    client.set('nickname', name);
+    client.broadcast.emit('chat', name + ' joined the chat');
+    messages.forEach(message => {
+      client.emit('messages', message.name + ':' + message.data);
+    });
   });
-
+  
+  client.on('messages', message => {
+    client.get('nickname', (err, name) =>{
+      client.broadcast.emit('messages', name + ": " + message);
+      client.emit('message', name + ": " + message);
+      storeMessage(name, message);
+    });
+  });
+  // client.on('question', question => {
+  //   if(!client.question_asked){
+  //     client.question_asked = true;
+  //     return client.broadcast.emit('question', question);
+  //   };
+  // });
 });
 
 server.listen(PORT, err => {
