@@ -19,10 +19,14 @@ let storeMessage = (name, message) => {
 
 io.on('connection', client => {
   client.on('join', name => {
-    client.set('nickname', name);
-    client.broadcast.emit('chat', name + ' joined the chat');
-    messages.forEach(message => {
-      client.emit('messages', message.name + ':' + message.data);
+    redisClient.lrange('message', 0, -1, (err, messages)=> {
+      messages = messages.reverse();
+
+
+      messages.forEach(m => {
+        m = JSON.parse(m);
+        client.emit('messages', m.name + ":" + m.data;)
+      });
     });
   });
 
