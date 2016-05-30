@@ -5,11 +5,16 @@ let express = require('express');
 let app = express();
 let server = require('http').createServer(app);
 let io = require('socket.io')(server);
+let redis = require('redis');
+let redisClient = redis.createClient();
 let messages = [];
 
 let storeMessage = (name, message) => {
-  messages.push({name, data});
-  if(messages.length < 10) return messages.shift();
+  let message = JSON.stringify({name, data});
+  redisClient.lpush('messages', message, (err, res) => {
+    redisClient.ltrim('messages', 0, 9);
+  });
+  // if(messages.length > 10) return messages.shift();
 };
 
 io.on('connection', client => {
@@ -20,7 +25,7 @@ io.on('connection', client => {
       client.emit('messages', message.name + ':' + message.data);
     });
   });
-  
+
   client.on('messages', message => {
     client.get('nickname', (err, name) =>{
       client.broadcast.emit('messages', name + ": " + message);

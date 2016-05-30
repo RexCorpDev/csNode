@@ -19,6 +19,7 @@
   "homepage": "https://github.com/RexCorpDev/csNode#readme",
   "dependencies": {
     "express": "^4.13.4",
+    "redis": "^2.6.0-2",
     "socket.io": "^1.4.6"
   }
 }
